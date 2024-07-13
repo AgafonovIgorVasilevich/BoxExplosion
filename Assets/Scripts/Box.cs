@@ -10,7 +10,6 @@ public class Box : MonoBehaviour
     [SerializeField] private int _childCount = 2;
     [SerializeField] private Effect _effect;
 
-    private List<Rigidbody> _children = new List<Rigidbody>();
     public float _splitFactor;
     public float _scaleFactor;
     private BoxPool _pool;
@@ -30,26 +29,27 @@ public class Box : MonoBehaviour
         _effect.gameObject.SetActive(true);
         _splitFactor /= 2;
         _scaleFactor /= 2;
-
-        if (Random.value < _splitFactor)
-            CreateChildren();
-
         _pool.Put(this);
+
+        if (Random.value >= _splitFactor)
+            return;
+
+        foreach (Rigidbody child in CreateChilren())
+            child.AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
     }
 
-    private void CreateChildren()
+    private List<Rigidbody> CreateChilren()
     {
+        List<Rigidbody> children = new List<Rigidbody>();
         Box child;
-        _children.Clear();
 
         for (int i = 0; i < _childCount; i++)
         {
             child = _pool.Get(_splitFactor, _scaleFactor);
             child.transform.position = transform.position;
-            _children.Add(child.GetComponent<Rigidbody>());
+            children.Add(child.GetComponent<Rigidbody>());
         }
 
-        foreach (Rigidbody rb in _children)
-            rb.AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
+        return children;
     }
 }
