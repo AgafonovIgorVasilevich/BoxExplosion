@@ -34,11 +34,11 @@ public class Box : MonoBehaviour
         if (Random.value >= _splitFactor)
             return;
 
-        foreach (Rigidbody child in CreateChilren())
+        foreach (Rigidbody child in CreateChildren())
             child.AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
     }
 
-    private List<Rigidbody> CreateChilren()
+    private List<Rigidbody> CreateChildren()
     {
         List<Rigidbody> children = new List<Rigidbody>();
         Box child;
