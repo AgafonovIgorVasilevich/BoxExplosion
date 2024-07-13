@@ -147,12 +147,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68c7984c9418dce41b1dded2df09ac56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _explosionForce: 100
   _explosionRadius: 5
-  _explosionForce: 300
   _childCount: 2
   _effect: {fileID: 253559491613335230}
-  _splitFactor: 0
-  _scaleFactor: 0
 --- !u!1001 &6041029242869763643
 PrefabInstance:
   m_ObjectHideFlags: 0
