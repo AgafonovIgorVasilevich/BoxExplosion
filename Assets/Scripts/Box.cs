@@ -10,8 +10,8 @@ public class Box : MonoBehaviour
     [SerializeField] private int _childCount = 2;
     [SerializeField] private Effect _effect;
 
-    public float _splitFactor;
-    public float _scaleFactor;
+    private float _splitFactor;
+    private float _scaleFactor;
     private BoxPool _pool;
 
     public void Initialize(BoxPool pool, float splitFactor, float scaleFactor)
