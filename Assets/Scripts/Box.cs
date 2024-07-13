@@ -23,9 +23,9 @@ public class Box : MonoBehaviour
         _pool = pool;
     }
 
-    private void OnMouseDown() => Explose();
+    private void OnMouseDown() => Explode();
 
-    private void Explose()
+    private void Explode()
     {
         _effect.gameObject.SetActive(true);
         _splitFactor /= 2;
