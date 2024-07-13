@@ -10,8 +10,8 @@ public class Box : MonoBehaviour
     [SerializeField] private int _childCount = 2;
     [SerializeField] private Effect _effect;
 
-    public float _splitFactor;
-    public float _scaleFactor;
+    private float _splitFactor;
+    private float _scaleFactor;
     private BoxPool _pool;
 
     public void Initialize(BoxPool pool, float splitFactor, float scaleFactor)
@@ -22,34 +22,37 @@ public class Box : MonoBehaviour
         _pool = pool;
     }
 
-    private void OnMouseDown() => Explode();
-
-    private void Explode()
+    private void OnMouseDown()
     {
-        _effect.gameObject.SetActive(true);
         _splitFactor /= 2;
         _scaleFactor /= 2;
         _pool.Put(this);
 
-        if (Random.value >= _splitFactor)
-            return;
-
-        foreach (Rigidbody child in CreateChildren())
-            child.AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
+        if (Random.value < _splitFactor)
+            CreateChildren();
+        else
+            Explode();
     }
 
-    private List<Rigidbody> CreateChildren()
+    private void Explode()
     {
-        List<Rigidbody> children = new List<Rigidbody>();
+        _effect.gameObject.SetActive(true);
+
+        Collider[] collisions = Physics.OverlapSphere(transform.position, _explosionRadius);
+
+        foreach (Collider collision in collisions)
+            if (collision.TryGetComponent(out Rigidbody rigidbody))
+                rigidbody.AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
+    }
+
+    private void CreateChildren()
+    {
         Box child;
 
         for (int i = 0; i < _childCount; i++)
         {
             child = _pool.Get(_splitFactor, _scaleFactor);
             child.transform.position = transform.position;
-            children.Add(child.GetComponent<Rigidbody>());
         }
-
-        return children;
     }
 }
