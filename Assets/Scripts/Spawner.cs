@@ -1,24 +1,34 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private float _spawnRadius = 4;
-    [SerializeField] private int _count = 3;
+    [SerializeField] private Exploder _exploder;
     [SerializeField] private BoxPool _pool;
 
-    [SerializeField] private float _splitFactor = 2;
-    [SerializeField] private float _scaleFactor = 1;
+    [SerializeField] private float _startScale = 2;
+    [SerializeField] private int _minCount = 2;
+    [SerializeField] private int _maxCount = 6;
 
-    private void Start()
+    private void OnEnable() => _exploder.Exploded += CreateBoxes;
+
+    private void OnDisable() => _exploder.Exploded -= CreateBoxes;
+
+    private void Start() => CreateBoxes(Vector3.up, _startScale);
+
+    private List<Rigidbody> CreateBoxes(Vector3 spawnPoint, float scale)
     {
-        Vector2 spawnPoint;
+        List<Rigidbody> fragments = new List<Rigidbody>();
+        int count = Random.Range(_minCount, _maxCount);
         Box box;
 
-        for(int i = 0; i < _count; i++)
+        for (int i = 0; i < count; i++)
         {
-            spawnPoint = Random.insideUnitSphere * _spawnRadius;
-            box = _pool.Get(_splitFactor, _scaleFactor);
-            box.transform.position = new Vector3(spawnPoint.x, transform.position.y, spawnPoint.y);
+            box = _pool.Get(spawnPoint);
+            box.Initialize(_exploder, scale);
+            fragments.Add(box.GetComponent<Rigidbody>());
         }
+
+        return fragments;
     }
 }
